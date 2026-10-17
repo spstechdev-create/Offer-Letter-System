@@ -1,0 +1,279 @@
+{
+  "sourceDumpDate": "2025-01-02",
+  "faculties": [
+    {
+      "id": 1,
+      "code": "FTKE",
+      "nameEn": "Faculty of Electrical Technology & Engineering (FTKE)",
+      "nameMs": "Fakulti Teknologi & Kejuruteraan Elektrik (FTKE)"
+    },
+    {
+      "id": 2,
+      "code": "FTKEK",
+      "nameEn": "Faculty of Electronics & Computer Technology & Engineering (FTKEK)",
+      "nameMs": "Fakulti Teknologi & Kejuruteraan Elektronik & Komputer (FTKEK)"
+    },
+    {
+      "id": 3,
+      "code": "FTKM",
+      "nameEn": "Faculty of Mechanical Technology & Engineering (FTKM)",
+      "nameMs": "Fakulti Teknologi & Kejuruteraan Mekanikal (FTKM)"
+    },
+    {
+      "id": 4,
+      "code": "FTKIP",
+      "nameEn": "Faculty of Industrial & Manufacturing Technology & Engineering (FTKIP)",
+      "nameMs": "Fakulti Teknologi & Kejuruteraan Industri & Pembuatan (FTKIP)"
+    },
+    {
+      "id": 5,
+      "code": "FTMK",
+      "nameEn": "Faculty of Information & Communications Technology (FTMK)",
+      "nameMs": "Fakulti Teknologi Maklumat & Komunikasi (FTMK)"
+    },
+    {
+      "id": 6,
+      "code": "FPTT",
+      "nameEn": "Faculty of Technology Management & Technopreneurship (FPTT)",
+      "nameMs": "Fakulti Pengurusan Teknologi & Teknousahawanan (FPTT)"
+    },
+    {
+      "id": 7,
+      "code": "IPTK",
+      "nameEn": "Institute of Technology Management & Entrepreneurship (IPTK)",
+      "nameMs": "Institut Pengurusan Teknologi & Keusahawanan (IPTK)"
+    }
+  ],
+  "sqlRows": 204,
+  "htmlProgrammeDefinitions": 52,
+  "totalOfferings": 208,
+  "active": 177,
+  "inactive": 31,
+  "conflicts": [
+    {
+      "code": "IPTK-L-013",
+      "name": "Doktor Falsafah",
+      "issues": [
+        "Duration conflict: SQL 3-8 tahun; HTML 2-4 years."
+      ]
+    },
+    {
+      "code": "IPTK-L-014",
+      "name": "Doktor Falsafah",
+      "issues": [
+        "Duration conflict: SQL 4-8 tahun; HTML 3-7 years."
+      ]
+    },
+    {
+      "code": "FTKEK-L-030",
+      "name": "Sarjana Sains Dalam Kejuruteraan Elektrik",
+      "issues": [
+        "Bilingual title conflict: Malay SQL says Electrical Engineering; English SQL/HTML says Electronic Engineering."
+      ]
+    },
+    {
+      "code": "FTKEK-L-031",
+      "name": "Sarjana Sains Dalam Kejuruteraan Elektrik",
+      "issues": [
+        "Bilingual title conflict: Malay SQL says Electrical Engineering; English SQL/HTML says Electronic Engineering."
+      ]
+    },
+    {
+      "code": "FTKM-L-062",
+      "name": "Sarjana Kejuruteraan Mekanikal",
+      "issues": [
+        "Structure conflict: SQL Course Work; HTML Research."
+      ]
+    },
+    {
+      "code": "FTKM-L-063",
+      "name": "Sarjana Kejuruteraan Mekanikal",
+      "issues": [
+        "Structure conflict: SQL Course Work; HTML Research."
+      ]
+    },
+    {
+      "code": "FTMK-L-066",
+      "name": "Doktor Teknologi Maklumat",
+      "issues": [
+        "Structure conflict: SQL Research; HTML Mixed Mode."
+      ]
+    },
+    {
+      "code": "FPTT-L-089",
+      "name": "Sarjana Pentadbiran Perniagaan (Pengurusan Operasi Termaju)",
+      "issues": [
+        "Fee conflict: SQL RM16520; HTML RM15020."
+      ]
+    },
+    {
+      "code": "FPTT-L-090",
+      "name": "Sarjana Pentadbiran Perniagaan (Pengurusan Operasi Termaju)",
+      "issues": [
+        "Fee conflict: SQL RM16520; HTML RM15020."
+      ]
+    },
+    {
+      "code": "FPTT-L-091",
+      "name": "Sarjana Pentadbiran Perniagaan (Pengurusan Teknologi dan Inovasi)",
+      "issues": [
+        "Fee conflict: SQL RM16520; HTML RM15020."
+      ]
+    },
+    {
+      "code": "FPTT-L-092",
+      "name": "Sarjana Pentadbiran Perniagaan (Pengurusan Teknologi dan Inovasi)",
+      "issues": [
+        "Fee conflict: SQL RM16520; HTML RM15020."
+      ]
+    },
+    {
+      "code": "IPTK-I-013",
+      "name": "Doctor of Philosophy",
+      "issues": [
+        "Duration conflict: SQL 3-8 years; HTML 2-4 years."
+      ]
+    },
+    {
+      "code": "IPTK-I-014",
+      "name": "Doctor of Philosophy",
+      "issues": [
+        "Duration conflict: SQL 4-8 years; HTML 3-7 years."
+      ]
+    },
+    {
+      "code": "FTKE-I-020",
+      "name": "Master of Electrical Engineering (Industrial Power)",
+      "issues": [
+        "Fee conflict: SQL RM10448; HTML RM15545."
+      ]
+    },
+    {
+      "code": "FTKE-I-022",
+      "name": "Master of Mechatronic Engineering",
+      "issues": [
+        "Fee conflict: SQL RM10448; HTML RM14710."
+      ]
+    },
+    {
+      "code": "FTKE-I-023",
+      "name": "Master of Mechatronic Engineering",
+      "issues": [
+        "Fee conflict: SQL RM10448; HTML RM14710."
+      ]
+    },
+    {
+      "code": "FTKE-I-024",
+      "name": "Master of Electrical Engineering",
+      "issues": [
+        "Fee conflict: SQL RM9320; HTML RM14710."
+      ]
+    },
+    {
+      "code": "FTKE-I-025",
+      "name": "Master of Electrical Engineering",
+      "issues": [
+        "Fee conflict: SQL RM9320; HTML RM14710."
+      ]
+    },
+    {
+      "code": "FTKEK-I-026",
+      "name": "Master of Science in Electronic Engineering",
+      "issues": [
+        "Bilingual title conflict: Malay SQL says Electrical Engineering; English SQL/HTML says Electronic Engineering."
+      ]
+    },
+    {
+      "code": "FTKEK-I-027",
+      "name": "Master of Science in Electronic Engineering",
+      "issues": [
+        "Bilingual title conflict: Malay SQL says Electrical Engineering; English SQL/HTML says Electronic Engineering."
+      ]
+    },
+    {
+      "code": "FTKEK-I-028",
+      "name": "Master of Electronics Engineering (Computer Engineering)",
+      "issues": [
+        "Fee conflict: SQL RM8710; HTML RM14710."
+      ]
+    },
+    {
+      "code": "FTKEK-I-029",
+      "name": "Master of Electronics Engineering (Computer Engineering)",
+      "issues": [
+        "Fee conflict: SQL RM8710; HTML RM14710."
+      ]
+    },
+    {
+      "code": "FTKM-I-058",
+      "name": "Master of Mechanical Engineering",
+      "issues": [
+        "Structure conflict: SQL Course Work; HTML Research."
+      ]
+    },
+    {
+      "code": "FTKM-I-059",
+      "name": "Master of Mechanical Engineering",
+      "issues": [
+        "Structure conflict: SQL Course Work; HTML Research."
+      ]
+    },
+    {
+      "code": "FTMK-I-062",
+      "name": "Doctor of Information Technology",
+      "issues": [
+        "Structure conflict: SQL Research; HTML Mixed Mode."
+      ]
+    },
+    {
+      "code": "IPTK-I-091",
+      "name": "Master of Science in Technical Communication",
+      "issues": [
+        "Fee conflict: SQL RM36568; HTML RM17876."
+      ]
+    },
+    {
+      "code": "IPTK-I-092",
+      "name": "Master of Science in Technical Communication",
+      "issues": [
+        "Fee conflict: SQL RM36568; HTML RM17876."
+      ]
+    },
+    {
+      "code": "FAIX-L-FT",
+      "name": "Master of Technology in Data Science and Analytics (MAIX)",
+      "issues": [
+        "HTML-only offering: faculty official names and Malay programme title need confirmation.",
+        "Mode conflict: HTML labels C & ODL but explicitly rejects ODL selection."
+      ]
+    },
+    {
+      "code": "FAIX-L-PT",
+      "name": "Master of Technology in Data Science and Analytics (MAIX)",
+      "issues": [
+        "HTML-only offering: faculty official names and Malay programme title need confirmation.",
+        "Mode conflict: HTML labels C & ODL but explicitly rejects ODL selection."
+      ]
+    },
+    {
+      "code": "FAIX-I-FT",
+      "name": "Master of Technology in Data Science and Analytics (MAIX)",
+      "issues": [
+        "HTML-only offering: faculty official names and Malay programme title need confirmation.",
+        "Mode conflict: HTML labels C & ODL but explicitly rejects ODL selection."
+      ]
+    },
+    {
+      "code": "FAIX-I-PT",
+      "name": "Master of Technology in Data Science and Analytics (MAIX)",
+      "issues": [
+        "HTML-only offering: faculty official names and Malay programme title need confirmation.",
+        "Mode conflict: HTML labels C & ODL but explicitly rejects ODL selection."
+      ]
+    }
+  ],
+  "excluded": [
+    "All legacy students, staff identities, passwords, generated letters and personal data.",
+    "ODL/Open Access placeholders without concrete approved duration and offering rules."
+  ]
+}

@@ -1,0 +1,101 @@
+[
+  {
+    "id": "ftke",
+    "code": "FTKE",
+    "name_ms": "Fakulti Teknologi dan Kejuruteraan Elektrik",
+    "name_en": "Faculty of Electrical Technology and Engineering",
+    "kind": "faculty",
+    "website": "https://ftke.utem.edu.my/en/",
+    "source_url": "https://ftke.utem.edu.my/en/",
+    "is_active": true,
+    "notes": "Malay and English names and FTKE code verified on the faculty website and corroborated by UTeM corporate directories on 2026-10-17."
+  },
+  {
+    "id": "ftkek",
+    "code": "FTKEK",
+    "name_ms": "Fakulti Teknologi dan Kejuruteraan Elektronik dan Komputer",
+    "name_en": "Faculty of Electronic and Computer Technology and Engineering",
+    "kind": "faculty",
+    "website": "https://ftkek.utem.edu.my/",
+    "source_url": "https://ftkek.utem.edu.my/menu-1/dean-s-welcome-note.html",
+    "is_active": true,
+    "notes": "Malay name/code verified on faculty site. English name follows faculty Dean's Welcome Note (updated 2025-11-18); corporate directory uses Electronics (plural), while the SPS 2026 embedded list uses Faculty of Electronic and Computer Engineering Technology. These official English variants remain documented; no programme titles are changed. Checked 2026-10-17."
+  },
+  {
+    "id": "ftkm",
+    "code": "FTKM",
+    "name_ms": "Fakulti Teknologi dan Kejuruteraan Mekanikal",
+    "name_en": "Faculty of Mechanical Technology and Engineering",
+    "kind": "faculty",
+    "website": "https://ftkm.utem.edu.my/",
+    "source_url": "https://ftkm.utem.edu.my/",
+    "is_active": true,
+    "notes": "Malay name/code and English faculty name verified on faculty homepage and corroborated by UTeM corporate directories on 2026-10-17."
+  },
+  {
+    "id": "ftkip",
+    "code": "FTKIP",
+    "name_ms": "Fakulti Teknologi dan Kejuruteraan Industri dan Pembuatan",
+    "name_en": "Faculty of Industrial and Manufacturing Technology and Engineering",
+    "kind": "faculty",
+    "website": "https://ftkip.utem.edu.my/",
+    "source_url": "https://www.utem.edu.my/en/corporate-info/faculties-department-centres.html",
+    "is_active": true,
+    "notes": "Malay name/code verified in FTKIP faculty contact footer; English name verified in UTeM corporate directory and SPS 2026 embedded faculty list. Checked 2026-10-17."
+  },
+  {
+    "id": "ftmk",
+    "code": "FTMK",
+    "name_ms": "Fakulti Teknologi Maklumat dan Komunikasi",
+    "name_en": "Faculty of Information and Communication Technology",
+    "kind": "faculty",
+    "website": "https://ftmk.utem.edu.my/web/",
+    "source_url": "https://ftmk.utem.edu.my/web/index.php/deans-foreword/",
+    "is_active": true,
+    "notes": "Malay name verified in UTeM Malay corporate directory. English singular Communication follows faculty Dean's Foreword (updated September 2026) and SPS 2026 embedded faculty list; corporate English directory uses Communications (plural). Checked 2026-10-17."
+  },
+  {
+    "id": "fptt",
+    "code": "FPTT",
+    "name_ms": "Fakulti Pengurusan Teknologi dan Teknousahawanan",
+    "name_en": "Faculty of Technology Management and Technopreneurship",
+    "kind": "faculty",
+    "website": "https://fptt.utem.edu.my/",
+    "source_url": "https://fptt.utem.edu.my/home/about-us-fptt/about-fptt.html",
+    "is_active": true,
+    "notes": "Malay contact footer, English faculty heading and FPTT code verified on faculty site; corroborated by UTeM corporate directories. Checked 2026-10-17."
+  },
+  {
+    "id": "faix",
+    "code": "FAIX",
+    "name_ms": "Fakulti Kecerdasan Buatan dan Keselamatan Siber",
+    "name_en": "Faculty of Artificial Intelligence and Cyber Security",
+    "kind": "faculty",
+    "website": "https://faix.utem.edu.my/en/",
+    "source_url": "https://faix.utem.edu.my/en/",
+    "is_active": true,
+    "notes": "English name/code verified on faculty site; Malay name verified in UTeM Malay corporate directory and academic page. Faculty registry activation does not approve the legacy MAIX offering's fees or modes. Checked 2026-10-17."
+  },
+  {
+    "id": "iptk",
+    "code": "IPTK",
+    "name_ms": "Institut Pengurusan Teknologi dan Keusahawanan",
+    "name_en": "Institute of Technology Management and Entrepreneurship",
+    "kind": "institute",
+    "website": "https://iptk.utem.edu.my/en/",
+    "source_url": "https://iptk.utem.edu.my/en/",
+    "is_active": true,
+    "notes": "Legacy programme owner retained without automatic retirement. IPTK website still displays this English name/code and UTeM Malay homepage still lists the Malay legacy name. Corporate ms/en directories now label the same destination ITK. Current identity/transition and programme ownership are unresolved; do not reassign IPTK programmes or rewrite saved letters automatically. Checked 2026-10-17."
+  },
+  {
+    "id": "itk",
+    "code": "ITK",
+    "name_ms": "Institut Teknologi Kelestarian",
+    "name_en": "Institute of Sustainability Technology",
+    "kind": "institute",
+    "website": "https://iptk.utem.edu.my/en/",
+    "source_url": "https://www.utem.edu.my/en/corporate-info/faculties-department-centres.html",
+    "is_active": true,
+    "notes": "Current ITK code/Malay/English names verified in UTeM corporate ms/en directories. SPS 2026 embedded list uses Institute of Sustainable Technology; corporate naming is retained here. Corporate links lead to the still-IPTK-branded site. Separate registry entry only: no legacy IPTK programmes migrated or new offerings inferred. Checked 2026-10-17."
+  }
+]
