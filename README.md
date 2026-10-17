@@ -11,6 +11,8 @@ One Next.js application combining the supplied registration systems and conditio
 - Editable catalogue names, fees, durations, faculty, structure, attendance and delivery, with fee history and explicit source reconciliation for conflicting offerings.
 - Database-driven pages and sidebar ordering (`urutan`), per-level page/action grants, own/faculty/all record visibility, user provisioning and custom user levels.
 - Letter defaults administration and activity audit history.
+- Editable faculty/institute directory with official bilingual names, stable programme relationships, retirement/restore and faculty-filtered catalogue browsing.
+- Redesigned light/dark/system appearance, saved locally and applied before page paint.
 
 ## Local setup
 
@@ -49,9 +51,18 @@ $env:SPS_USER_EMAIL = 'your-admin-email'
 node --env-file=.env.local scripts/smoke-auth.mjs
 node --env-file=.env.local scripts/smoke-workflow.mjs
 node --env-file=.env.local scripts/smoke-permissions.mjs
+node --env-file=.env.local scripts/smoke-faculties.mjs
 ```
 
 The workflow check creates two fictitious `QA TEST` registrations and archives their student records afterward; their immutable test letter data is retained by design. It restores programme/page settings that it temporarily changes. The permission check temporarily changes the test administrator's scope and fixture ownership, restoring them in `finally`; use a development environment without concurrent operational activity.
+
+The faculty lifecycle check temporarily renames and retires a faculty, verifies new-registration blocking and immutable historical PDFs, then restores the original faculty settings and access scope. Its labelled test registration is archived afterward.
+
+## Faculty directory
+
+Faculties/institutes have their own `faculties` table. Programmes, application ownership and faculty-scoped accounts reference stable UUIDs; mutable names and codes are not identifiers for access control. Retiring a faculty disables new registrations across its offerings without deleting programmes or changing old letters. Admins can update bilingual names, codes, websites and source notes under **Faculties & institutes**.
+
+Official UTeM information was checked on 17 October 2026. The directory contains seven faculties, current ITK and retained legacy IPTK. Official pages disagree on the institute name and some English name variants; [the source report](docs/faculty-sources.md) records the evidence. No legacy IPTK programmes were silently reassigned or current programme fees inferred from the faculty research. Source seed values live in `data/faculties.json`; after migration the database is authoritative, and reseeding does not overwrite faculty edits.
 
 Verified: managed sign-in/session restoration/logout; public signup denial; local/international registration; server-derived fees; repeat submission reuse; on-demand PDFs; catalogue rename/fee edits preserving original PDF content; database rejection of letter mutation; page ordering/grant changes; agent record isolation; direct API permission denial. Desktop and 390px mobile layouts were inspected. PDF layout was checked with Malay/English, long text, and page breaks.
 

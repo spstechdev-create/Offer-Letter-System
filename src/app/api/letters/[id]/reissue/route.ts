@@ -22,8 +22,8 @@ export async function POST(
     const { id } = await params;
     const sql = database();
     const [row] =
-      await sql`SELECT l.*,a.created_by,a.faculty_snapshot,s.name,s.document_number,s.email,s.phone,s.address FROM issued_letters l JOIN applications a ON a.id=l.application_id JOIN students s ON s.id=a.student_id WHERE l.id=${id}::uuid`;
-    if (!row || !recordAllowed(user, row.created_by, row.faculty_snapshot))
+      await sql`SELECT l.*,a.created_by,a.faculty_id,s.name,s.document_number,s.email,s.phone,s.address FROM issued_letters l JOIN applications a ON a.id=l.application_id JOIN students s ON s.id=a.student_id WHERE l.id=${id}::uuid`;
+    if (!row || !recordAllowed(user, row.created_by, row.faculty_id))
       throw new HttpError(404, "Letter not found.");
     const old = row.snapshot as LetterSnapshot;
     const snapshot = {

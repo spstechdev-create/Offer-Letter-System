@@ -28,12 +28,10 @@ export async function PATCH(
     const v = schema.parse(await request.json());
     const sql = database();
     const ownership =
-      await sql`SELECT created_by,faculty_snapshot FROM applications WHERE student_id=${id}::uuid`;
+      await sql`SELECT created_by,faculty_id FROM applications WHERE student_id=${id}::uuid`;
     if (
       !ownership.length ||
-      !ownership.every((a) =>
-        recordAllowed(user, a.created_by, a.faculty_snapshot),
-      )
+      !ownership.every((a) => recordAllowed(user, a.created_by, a.faculty_id))
     )
       throw new HttpError(
         403,

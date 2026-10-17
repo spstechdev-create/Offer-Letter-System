@@ -14,8 +14,8 @@ export async function GET(
     const { id } = await params;
     const sql = database();
     const [app] =
-      await sql`SELECT created_by,faculty_snapshot FROM applications WHERE id=${id}::uuid`;
-    if (!app || !recordAllowed(user, app.created_by, app.faculty_snapshot))
+      await sql`SELECT created_by,faculty_id FROM applications WHERE id=${id}::uuid`;
+    if (!app || !recordAllowed(user, app.created_by, app.faculty_id))
       throw new HttpError(404, "Application not found.");
     return Response.json(
       await sql`SELECT id,version,issued_at,snapshot->>'reference' reference FROM issued_letters WHERE application_id=${id}::uuid ORDER BY version DESC`,

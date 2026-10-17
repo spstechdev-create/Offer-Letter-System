@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { Icon } from "@/components/icons";
 import { authClient } from "@/components/auth-client";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -54,28 +55,28 @@ export default function LoginPage() {
             UNIVERSITI TEKNIKAL MALAYSIA MELAKA
           </span>
           <h1>
-            Every ambition
+            Postgraduate
             <br />
-            begins with
+            admissions,
             <br />
-            <em>an opportunity.</em>
+            <em>in one workspace.</em>
           </h1>
           <p>
-            One connected workspace for postgraduate registrations and
-            conditional offers.
+            Register students, manage programme fees and retrieve conditional
+            offer letters from a single admissions desk.
           </p>
           <div className="login-story-line" />
           <div className="login-story-caption">
             <Icon name="catalogue" size={24} />
             <span>
-              Supporting the next generation
+              School of Graduate Studies
               <br />
-              of researchers and innovators.
+              Universiti Teknikal Malaysia Melaka
             </span>
           </div>
         </div>
         <div className="login-story-footer">
-          Graduate admissions, thoughtfully connected.
+          SPS · Registration and conditional offers
         </div>
         <div className="login-orbit orbit-one" />
         <div className="login-orbit orbit-two" />
@@ -83,6 +84,7 @@ export default function LoginPage() {
       <section className="login-form-side">
         <div className="login-topnote">
           <Icon name="lock" size={14} /> Staff & agent access
+          <ThemeToggle />
         </div>
         <div className="login-form-container">
           <span className="eyebrow">YOUR ADMISSIONS WORKSPACE</span>

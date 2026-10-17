@@ -12,6 +12,7 @@ const pages = [
   ["overview", "Overview", "LayoutDashboard", 10],
   ["register", "New registration", "UserPlus", 20],
   ["records", "Student records", "Users", 30],
+  ["faculties", "Faculties & institutes", "Building2", 35],
   ["catalogue", "Programme catalogue", "GraduationCap", 40],
   ["pages", "Pages & permissions", "PanelLeft", 50],
   ["users", "Users & levels", "ShieldCheck", 60],
@@ -26,7 +27,8 @@ for (const [key, title, icon, order] of pages) {
       actions = ["view", "create", "edit", "generate", "manage"];
     else if (["overview", "register", "records"].includes(key))
       actions = ["view", "create", "edit", "generate"];
-    else if (key === "catalogue" && level === "staff") actions = ["view"];
+    else if (["catalogue", "faculties"].includes(key) && level === "staff")
+      actions = ["view"];
     if (actions.length)
       await sql`INSERT INTO page_grants(page_id,level_id,actions) VALUES(${key},${level},${JSON.stringify(actions)}::jsonb) ON CONFLICT DO NOTHING`;
   }
@@ -34,7 +36,7 @@ for (const [key, title, icon, order] of pages) {
 const rows = JSON.parse(
   await readFile(new URL("../data/programmes.json", import.meta.url), "utf8"),
 );
-await sql`INSERT INTO catalogue(id,code,name,faculty,category,attendance,structure,duration,total_fee,is_active,needs_review,source) SELECT code,code,name,"facultyCode",category,attendance,structure,duration,fee,active,jsonb_array_length(issues)>0,to_jsonb(source) FROM jsonb_to_recordset(${JSON.stringify(rows)}::jsonb) AS x(code text,name text,"facultyCode" text,category text,attendance text,structure text,duration text,fee numeric,active boolean,issues jsonb,source text) ON CONFLICT DO NOTHING`;
+await sql`INSERT INTO catalogue(id,code,name,faculty,faculty_id,category,attendance,structure,duration,total_fee,is_active,needs_review,source) SELECT x.code,x.code,x.name,x."facultyCode",f.id,x.category,x.attendance,x.structure,x.duration,x.fee,x.active,jsonb_array_length(x.issues)>0,to_jsonb(x.source) FROM jsonb_to_recordset(${JSON.stringify(rows)}::jsonb) AS x(code text,name text,"facultyCode" text,category text,attendance text,structure text,duration text,fee numeric,active boolean,issues jsonb,source text) JOIN faculties f ON f.code=x."facultyCode" ON CONFLICT DO NOTHING`;
 await sql`INSERT INTO app_settings(key,value) VALUES('letter_defaults',${JSON.stringify({ templateVersion: "sps-conditional-v1", signatory: { name: "PROFESOR DR. MOHD RIZAL BIN SALLEH", title: "Dekan / Dean, Sekolah Pengajian Siswazah" }, admissionUrl: "https://portal.utem.edu.my/admission/default", intake: "", policyReviewRequired: true })}::jsonb) ON CONFLICT DO NOTHING`;
 console.log(
   `Seeded ${rows.length} source offerings, page registry and explicit level grants. Existing edits preserved.`,

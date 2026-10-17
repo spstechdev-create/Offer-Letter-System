@@ -26,6 +26,7 @@ export const cataloguePatch = z.object({
   duration: z.string().trim().min(1).max(100),
   is_active: z.boolean(),
   faculty: z.string().trim().min(2).max(50).optional(),
+  faculty_id: z.string().uuid().optional(),
   structure: z.string().trim().min(2).max(100).optional(),
   attendance: z.string().trim().min(2).max(100).optional(),
   delivery: z.string().trim().min(2).max(100).optional(),

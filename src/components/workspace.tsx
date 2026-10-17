@@ -10,6 +10,11 @@ import {
 } from "react";
 import { Icon } from "./icons";
 import { authClient } from "./auth-client";
+import Faculties, { type Faculty } from "./faculties";
+import ProgrammeCatalogue, {
+  type ProgrammeOffering,
+} from "./programme-catalogue";
+import { ThemeToggle } from "./theme-toggle";
 
 type Grant = { level_id: string; actions: string[] };
 type PageRow = {
@@ -27,6 +32,7 @@ type PageRow = {
 };
 type User = {
   faculty_code?: string | null;
+  faculty_id?: string | null;
   id: string;
   name: string;
   email: string;
@@ -35,21 +41,7 @@ type User = {
   level_id?: string;
   active?: boolean;
 };
-type Offering = {
-  id: string;
-  code: string;
-  name: string;
-  name_en?: string;
-  faculty: string;
-  structure: string;
-  category: string;
-  attendance: string;
-  delivery: string;
-  duration: string;
-  total_fee: number | string;
-  is_active: boolean;
-  needs_review?: boolean;
-};
+type Offering = ProgrammeOffering;
 type Application = {
   id: string;
   student_id?: string;
@@ -102,6 +94,7 @@ type Bootstrap = {
   applications?: Application[];
   students?: Application[];
   catalogue: Offering[];
+  faculties: Faculty[];
   levels: Level[];
   users?: User[];
   audit?: Audit[];
@@ -318,6 +311,7 @@ export default function Workspace() {
   const [data, setData] = useState<Bootstrap | null>(null);
   const [error, setError] = useState("");
   const [page, setPage] = useState("");
+  const [facultyFilter, setFacultyFilter] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const [toast, setToast] = useState<Toast | null>(null);
   const [query, setQuery] = useState("");
@@ -340,8 +334,11 @@ export default function Workspace() {
   }, []);
   useEffect(() => {
     void load();
-    const sync = () =>
-      setPage(new URLSearchParams(window.location.search).get("page") || "");
+    const sync = () => {
+      const params = new URLSearchParams(window.location.search);
+      setPage(params.get("page") || "");
+      setFacultyFilter(params.get("faculty") || "");
+    };
     sync();
     window.addEventListener("popstate", sync);
     return () => window.removeEventListener("popstate", sync);
@@ -351,9 +348,14 @@ export default function Workspace() {
     const timer = setTimeout(() => setToast(null), 5500);
     return () => clearTimeout(timer);
   }, [toast]);
-  const navigate = useCallback((key: string) => {
-    window.history.pushState({}, "", `/?page=${encodeURIComponent(key)}`);
+  const navigate = useCallback((key: string, facultyId = "") => {
+    window.history.pushState(
+      {},
+      "",
+      `/?page=${encodeURIComponent(key)}${facultyId ? "&faculty=" + encodeURIComponent(facultyId) : ""}`,
+    );
     setPage(key);
+    setFacultyFilter(facultyId);
     setMenuOpen(false);
     setQuery("");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -512,6 +514,7 @@ export default function Workspace() {
             </span>
           </div>
           <div className="topbar-right">
+            <ThemeToggle />
             <span className="topbar-date">{dateLabel}</span>
             <span className="header-divider" />
             <span className="role-tag">
@@ -548,7 +551,24 @@ export default function Workspace() {
           ) : currentKey === "records" ? (
             <Records {...common} query={query} setQuery={setQuery} />
           ) : currentKey === "catalogue" ? (
-            <Catalogue {...common} />
+            <ProgrammeCatalogue
+              catalogue={data.catalogue}
+              faculties={data.faculties || []}
+              initialFacultyId={facultyFilter}
+              canEdit={can("edit")}
+              onChanged={load}
+              notify={notify}
+            />
+          ) : currentKey === "faculties" ? (
+            <Faculties
+              faculties={data.faculties || []}
+              canManage={can("manage")}
+              onChanged={load}
+              notify={notify}
+              onViewProgrammes={(id) =>
+                navigate(findPage("catalogue") || "catalogue", id)
+              }
+            />
           ) : currentKey === "pages" ? (
             <PagesAdmin {...common} />
           ) : currentKey === "users" ? (
@@ -641,7 +661,7 @@ function Overview({ data, applications: allApplications, go }: Shared) {
     <>
       <Heading
         eyebrow="YOUR ADMISSIONS DESK"
-        title={`Welcome back, ${data.user.name.split(" ")[0]}.`}
+        title="Overview"
         description="A clear view of your students, programmes and conditional offers."
       >
         {registerPage && (
@@ -730,38 +750,6 @@ function Overview({ data, applications: allApplications, go }: Shared) {
           )}
         </section>
         <div className="overview-aside">
-          <section className="workflow-card">
-            <div className="workflow-decoration" />
-            <span className="mini-label">ONE CONNECTED WORKFLOW</span>
-            <h2>
-              From registration
-              <br />
-              to a new beginning.
-            </h2>
-            <p>
-              Student details, programme selection and a conditional offer. All
-              together.
-            </p>
-            <div className="workflow-steps">
-              <span>
-                <i>1</i>Register a student
-              </span>
-              <span>
-                <i>2</i>Save their information
-              </span>
-              <span>
-                <i>
-                  <Icon name="check" size={12} />
-                </i>
-                Offer ready to view
-              </span>
-            </div>
-            {registerPage && (
-              <button className="workflow-link" onClick={() => go("register")}>
-                Start a registration <Icon name="arrow" size={18} />
-              </button>
-            )}
-          </section>
           <section className="small-info-card">
             <span className="info-icon">
               <Icon name="file" size={21} />
@@ -812,10 +800,12 @@ function Overview({ data, applications: allApplications, go }: Shared) {
 function StudentTable({
   applications,
   compact = false,
-  onSelect,allowGenerate=true,
+  onSelect,
+  allowGenerate = true,
 }: {
   applications: Application[];
-  compact?: boolean;allowGenerate?:boolean;
+  compact?: boolean;
+  allowGenerate?: boolean;
   onSelect?: (application: Application) => void;
 }) {
   return (
@@ -879,7 +869,7 @@ function StudentTable({
               )}
               <td className="date-cell">{date(a.created_at)}</td>
               <td className="align-right">
-                {a.letter_id&&allowGenerate ? (
+                {a.letter_id && allowGenerate ? (
                   <a
                     href={`/api/letters/${encodeURIComponent(a.letter_id)}`}
                     target="_blank"
@@ -947,11 +937,16 @@ function Registration({ data, notify, reload, go }: Shared) {
   const available = data.catalogue.filter(
     (o) =>
       o.is_active &&
+      o.faculty_active &&
       !o.needs_review &&
       o.category?.toLowerCase() === form.category,
   );
-  const faculties = [...new Set(available.map((o) => o.faculty))].sort();
-  const offerings = available.filter((o) => !faculty || o.faculty === faculty);
+  const faculties = (data.faculties || []).filter(
+    (f) => f.is_active && available.some((o) => o.faculty_id === f.id),
+  );
+  const offerings = available.filter(
+    (o) => !faculty || o.faculty_id === faculty,
+  );
   const offering = available.find((o) => o.id === form.offeringId);
   const set = (name: keyof RegistrationForm, value: string) =>
     setForm((previous) => ({ ...previous, [name]: value }));
@@ -995,7 +990,7 @@ function Registration({ data, notify, reload, go }: Shared) {
           <Icon name="check" size={34} />
         </div>
         <div className="eyebrow">REGISTRATION COMPLETE</div>
-        <h1>A new beginning, on record.</h1>
+        <h1>Student registered</h1>
         <p>
           <strong>{form.name}</strong> has been registered successfully.
           <br />
@@ -1052,7 +1047,7 @@ function Registration({ data, notify, reload, go }: Shared) {
   return (
     <>
       <Heading
-        eyebrow="A NEW CHAPTER STARTS HERE"
+        eyebrow="STUDENT REGISTRATION"
         title="Register a student"
         description="Enter their details, select a programme and issue a conditional offer."
       />
@@ -1221,9 +1216,10 @@ function Registration({ data, notify, reload, go }: Shared) {
                     }}
                   >
                     <option value="">Select a faculty</option>
-                    {faculties.map((name) => (
-                      <option key={name} value={name}>
-                        {name}
+                    {faculties.map((f) => (
+                      <option key={f.id} value={f.id}>
+                        {f.code} —{" "}
+                        {form.category === "local" ? f.name_ms : f.name_en}
                       </option>
                     ))}
                   </select>
@@ -1512,7 +1508,7 @@ function Records({
   return (
     <>
       <Heading
-        eyebrow="EVERY STUDENT, ONE RECORD"
+        eyebrow="REGISTRATION DIRECTORY"
         title="Student records"
         description={
           data.user.scope === "own"
@@ -1571,7 +1567,11 @@ function Records({
           </div>
         </div>
         {filtered.length ? (
-          <StudentTable applications={filtered} onSelect={select} allowGenerate={can("generate")}/>
+          <StudentTable
+            applications={filtered}
+            onSelect={select}
+            allowGenerate={can("generate")}
+          />
         ) : (
           <Empty
             title={
@@ -1787,7 +1787,7 @@ function Records({
                   <Button variant="secondary" onClick={() => setSelected(null)}>
                     Close
                   </Button>
-                  {can("edit")&&can("generate") && (
+                  {can("edit") && can("generate") && (
                     <Button
                       variant="secondary"
                       icon="refresh"
@@ -1832,341 +1832,6 @@ function Records({
               </div>
             </>
           )}
-        </Modal>
-      )}
-    </>
-  );
-}
-
-function Catalogue({ data, can, notify, reload }: Shared) {
-  const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState("all");
-  const [selected, setSelected] = useState<Offering | null>(null);
-  const [busy, setBusy] = useState(false);
-  const [form, setForm] = useState({
-    name: "",
-    faculty: "",
-    structure: "",
-    attendance: "",
-    delivery: "",
-    total_fee: "",
-    duration: "",
-    is_active: true,
-    review_confirmed: false,
-  });
-  const filtered = data.catalogue.filter(
-    (o) =>
-      (filter === "all" ||
-        (filter === "review"
-          ? o.needs_review
-          : filter === "active"
-            ? o.is_active
-            : !o.is_active)) &&
-      `${o.name} ${o.code} ${o.faculty} ${o.category}`
-        .toLowerCase()
-        .includes(query.toLowerCase()),
-  );
-  function edit(offering: Offering) {
-    setSelected(offering);
-    setForm({
-      name: offering.name,
-      faculty: offering.faculty,
-      structure: offering.structure,
-      attendance: offering.attendance,
-      delivery: offering.delivery,
-      total_fee: String(offering.total_fee),
-      duration: offering.duration || "",
-      is_active: offering.is_active,
-      review_confirmed: false,
-    });
-  }
-  async function save(event: FormEvent) {
-    event.preventDefault();
-    if (!selected) return;
-    setBusy(true);
-    try {
-      await request(
-        `/api/catalogue/${encodeURIComponent(selected.id)}`,
-        "PATCH",
-        { ...form, total_fee: Number(form.total_fee) },
-      );
-      await reload();
-      setSelected(null);
-      notify(
-        "Catalogue updated. Existing letters retain their original programme and fee.",
-      );
-    } catch (err) {
-      notify(
-        err instanceof Error ? err.message : "Could not update this programme.",
-        true,
-      );
-    } finally {
-      setBusy(false);
-    }
-  }
-  const reviewCount = data.catalogue.filter((o) => o.needs_review).length;
-  return (
-    <>
-      <Heading
-        eyebrow="ACADEMIC SETTINGS"
-        title="Programme catalogue"
-        description="Manage programme offerings, total fees and durations for new registrations."
-      >
-        <div className="catalogue-count">
-          <strong>{data.catalogue.filter((o) => o.is_active).length}</strong>{" "}
-          active offerings
-        </div>
-      </Heading>
-      <div className="catalogue-preservation">
-        <div className="preservation-icon">
-          <Icon name="shield" size={23} />
-        </div>
-        <div>
-          <strong>Update the catalogue with confidence.</strong>
-          <p>
-            Programme names and prices on issued letters stay exactly as they
-            were. Your edits apply to future letters.
-          </p>
-        </div>
-        <Badge>History preserved</Badge>
-      </div>
-      {reviewCount > 0 && (
-        <div className="notice amber">
-          <Icon name="info" size={18} />
-          {reviewCount} offering{reviewCount === 1 ? " needs" : "s need"} source
-          reconciliation before registration can use{" "}
-          {reviewCount === 1 ? "it" : "them"}.
-        </div>
-      )}
-      <section className="panel">
-        <div className="table-toolbar">
-          <div className="search-field">
-            <Icon name="search" size={18} />
-            <input
-              aria-label="Search programmes"
-              placeholder="Search programme, faculty or code…"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          </div>
-          <select
-            className="filter-select"
-            aria-label="Filter programmes"
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-          >
-            <option value="all">All offerings</option>
-            <option value="active">Active offerings</option>
-            <option value="inactive">Inactive offerings</option>
-            <option value="review">Needs review</option>
-          </select>
-        </div>
-        {filtered.length ? (
-          <div className="table-wrap">
-            <table className="catalogue-table">
-              <thead>
-                <tr>
-                  <th>Programme / offering</th>
-                  <th>Category & attendance</th>
-                  <th>Duration</th>
-                  <th>Total fee</th>
-                  <th>Status</th>
-                  {can("edit") && <th className="align-right">Action</th>}
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((o) => (
-                  <tr key={o.id}>
-                    <td>
-                      <span className="faculty-label">
-                        {o.faculty} <span>· {o.code}</span>
-                      </span>
-                      <strong className="catalogue-programme">{o.name}</strong>
-                      <small className="cell-subtext">
-                        {o.structure}
-                        {o.delivery ? ` · ${o.delivery}` : ""}
-                      </small>
-                    </td>
-                    <td>
-                      <span className="capitalize">{o.category}</span>
-                      <small className="cell-subtext">{o.attendance}</small>
-                    </td>
-                    <td className="duration-cell">{o.duration || "—"}</td>
-                    <td className="money-cell">{money(o.total_fee)}</td>
-                    <td>
-                      <Badge
-                        tone={
-                          o.needs_review
-                            ? "amber"
-                            : o.is_active
-                              ? "green"
-                              : "neutral"
-                        }
-                      >
-                        {o.needs_review
-                          ? "Needs review"
-                          : o.is_active
-                            ? "Active"
-                            : "Inactive"}
-                      </Badge>
-                    </td>
-                    {can("edit") && (
-                      <td className="align-right">
-                        <button
-                          className="table-edit"
-                          onClick={() => edit(o)}
-                          aria-label={`Edit ${o.name}`}
-                        >
-                          <Icon name="edit" size={16} /> Edit
-                        </button>
-                      </td>
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <Empty
-            title="No programmes found"
-            description="Try another search or offering filter."
-            icon="catalogue"
-          />
-        )}
-        <div className="table-footer">
-          <span>
-            {filtered.length} programme offering
-            {filtered.length === 1 ? "" : "s"}
-          </span>
-          <span>Fees in Malaysian Ringgit (MYR)</span>
-        </div>
-      </section>
-      {selected && (
-        <Modal
-          title="Edit programme offering"
-          subtitle={`${selected.faculty} · ${selected.code} · ${selected.category}`}
-          onClose={() => setSelected(null)}
-        >
-          <form onSubmit={save}>
-            <div className="modal-body fields-grid">
-              <Field label="Programme name *" wide>
-                <input
-                  autoFocus
-                  required
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  maxLength={300}
-                />
-              </Field>
-              <Field label="Faculty">
-                <input
-                  required
-                  value={form.faculty}
-                  onChange={(e) =>
-                    setForm({ ...form, faculty: e.target.value })
-                  }
-                />
-              </Field>
-              <Field label="Academic structure">
-                <input
-                  required
-                  value={form.structure}
-                  onChange={(e) =>
-                    setForm({ ...form, structure: e.target.value })
-                  }
-                />
-              </Field>
-              <Field label="Attendance">
-                <input
-                  required
-                  value={form.attendance}
-                  onChange={(e) =>
-                    setForm({ ...form, attendance: e.target.value })
-                  }
-                />
-              </Field>
-              <Field label="Delivery">
-                <input
-                  required
-                  value={form.delivery}
-                  onChange={(e) =>
-                    setForm({ ...form, delivery: e.target.value })
-                  }
-                />
-              </Field>
-              {selected.needs_review && (
-                <label className="checkbox-label field-wide">
-                  <input
-                    type="checkbox"
-                    required={form.is_active}
-                    checked={form.review_confirmed}
-                    onChange={(e) =>
-                      setForm({ ...form, review_confirmed: e.target.checked })
-                    }
-                  />
-                  <span>
-                    I have reconciled this offering with the source audit and
-                    confirmed its name, fee, structure and duration.
-                  </span>
-                </label>
-              )}
-              <Field label="Total programme fee (RM) *">
-                <div className="input-prefix">
-                  <span>RM</span>
-                  <input
-                    required
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    max="10000000"
-                    value={form.total_fee}
-                    onChange={(e) =>
-                      setForm({ ...form, total_fee: e.target.value })
-                    }
-                  />
-                </div>
-              </Field>
-              <Field label="Duration">
-                <input
-                  value={form.duration}
-                  onChange={(e) =>
-                    setForm({ ...form, duration: e.target.value })
-                  }
-                  placeholder="e.g. 2–4 semesters"
-                  maxLength={100}
-                />
-              </Field>
-              <label className="checkbox-label field-wide">
-                <input
-                  type="checkbox"
-                  checked={form.is_active}
-                  onChange={(e) =>
-                    setForm({ ...form, is_active: e.target.checked })
-                  }
-                />
-                <span>Active and available for new registrations</span>
-              </label>
-              <div className="notice field-wide">
-                <Icon name="shield" size={18} />
-                <span>
-                  Only new letters use these details. Every existing letter
-                  keeps the name and total fee recorded when it was issued.
-                </span>
-              </div>
-            </div>
-            <div className="modal-actions">
-              <Button
-                variant="secondary"
-                type="button"
-                onClick={() => setSelected(null)}
-              >
-                Cancel
-              </Button>
-              <Button icon="check" type="submit" busy={busy}>
-                Save programme
-              </Button>
-            </div>
-          </form>
         </Modal>
       )}
     </>
@@ -2488,6 +2153,7 @@ function UsersAdmin({ data, notify, reload, ...rest }: Shared) {
     active: true,
     scope: "own",
     faculty_code: "",
+    faculty_id: "",
   });
   function edit(user: User) {
     setSelected(user);
@@ -2499,6 +2165,7 @@ function UsersAdmin({ data, notify, reload, ...rest }: Shared) {
       active: user.active !== false,
       scope: user.scope || "own",
       faculty_code: user.faculty_code || "",
+      faculty_id: user.faculty_id || "",
     });
   }
   async function save(event: FormEvent) {
@@ -2679,18 +2346,25 @@ function UsersAdmin({ data, notify, reload, ...rest }: Shared) {
                 </select>
               </Field>
               {form.scope === "faculty" && (
-                <Field label="Faculty code">
-                  <input
+                <Field label="Faculty / institute">
+                  <select
                     required
-                    value={form.faculty_code}
+                    value={form.faculty_id}
                     onChange={(e) =>
                       setForm({
                         ...form,
-                        faculty_code: e.target.value.toUpperCase(),
+                        faculty_id: e.target.value,
                       })
                     }
-                    placeholder="e.g. FTMK"
-                  />
+                  >
+                    <option value="">Select a faculty</option>
+                    {data.faculties.map((f) => (
+                      <option key={f.id} value={f.id}>
+                        {f.code} — {f.name_en}
+                        {!f.is_active ? " (Retired)" : ""}
+                      </option>
+                    ))}
+                  </select>
                 </Field>
               )}
               <Field label="Student record visibility">

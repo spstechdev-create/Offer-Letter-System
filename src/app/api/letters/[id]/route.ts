@@ -15,11 +15,8 @@ export async function GET(
     const { id } = await params;
     const sql = database();
     const [letter] =
-      await sql`SELECT l.snapshot,a.created_by,a.faculty_snapshot FROM issued_letters l JOIN applications a ON a.id=l.application_id WHERE l.id=${id}::uuid`;
-    if (
-      !letter ||
-      !recordAllowed(user, letter.created_by, letter.faculty_snapshot)
-    )
+      await sql`SELECT l.snapshot,a.created_by,a.faculty_id FROM issued_letters l JOIN applications a ON a.id=l.application_id WHERE l.id=${id}::uuid`;
+    if (!letter || !recordAllowed(user, letter.created_by, letter.faculty_id))
       throw new HttpError(404, "Letter not found.");
     const snapshot = letter.snapshot as LetterSnapshot;
     const bytes = await generateLetterPdf(snapshot);

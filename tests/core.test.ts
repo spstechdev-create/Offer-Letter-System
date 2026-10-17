@@ -3,6 +3,50 @@ import assert from "node:assert/strict";
 import { PDFDocument } from "pdf-lib";
 import { generateLetterPdf, type LetterSnapshot } from "../src/lib/pdf";
 import { registrationSchema } from "../src/lib/validation";
+import { facultySchema, facultyPatch } from "../src/lib/faculty-validation";
+import { allowsFtmkMasterTemplate } from "../src/lib/template-eligibility";
+test("Master template applicability follows identity and excludes Malay doctorates", () => {
+  assert.equal(
+    allowsFtmkMasterTemplate(
+      "stable-ftmk-id",
+      "Sarjana Sains Komputer",
+      "stable-ftmk-id",
+    ),
+    true,
+  );
+  assert.equal(
+    allowsFtmkMasterTemplate(
+      "stable-ftmk-id",
+      "Master of Computer Science",
+      "stable-ftmk-id",
+    ),
+    true,
+  );
+  assert.equal(
+    allowsFtmkMasterTemplate(
+      "other-faculty-id",
+      "Master of Computer Science",
+      "stable-ftmk-id",
+    ),
+    false,
+  );
+  assert.equal(
+    allowsFtmkMasterTemplate(
+      "stable-ftmk-id",
+      "Doktor Teknologi Maklumat",
+      "stable-ftmk-id",
+    ),
+    false,
+  );
+  assert.equal(
+    allowsFtmkMasterTemplate(
+      "stable-ftmk-id",
+      "Doctor of Philosophy",
+      "stable-ftmk-id",
+    ),
+    false,
+  );
+});
 const snapshot: LetterSnapshot = {
   reference: "QA-IMMUTABLE",
   issuedAt: "2026-10-17T02:00:00Z",
@@ -57,4 +101,24 @@ test("registration normalizes document IDs and rejects forged category", () => {
     registrationSchema.safeParse({ ...data, category: "admin" }).success,
     false,
   );
+});
+test("faculty edits preserve explicit values and reject unsafe website schemes", () => {
+  const faculty = {
+    code: " ftmk ",
+    name_ms: "Fakulti Teknologi Maklumat dan Komunikasi",
+    name_en: "Faculty of Information and Communication Technology",
+    kind: "faculty",
+    website: "https://ftmk.utem.edu.my/",
+    is_active: true,
+  };
+  assert.equal(facultySchema.parse(faculty).code, "FTMK");
+  assert.equal(
+    facultySchema.safeParse({ ...faculty, website: "javascript:alert(1)" })
+      .success,
+    false,
+  );
+  assert.deepEqual(facultyPatch.parse({ is_active: false }), {
+    is_active: false,
+  });
+  assert.equal(facultyPatch.safeParse({}).success, false);
 });

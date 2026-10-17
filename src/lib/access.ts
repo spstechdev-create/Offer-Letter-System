@@ -9,6 +9,7 @@ export type AppUser = {
   level: string;
   scope: "own" | "faculty" | "all";
   faculty_code: string | null;
+  faculty_id: string | null;
   active: boolean;
 };
 export class HttpError extends Error {
@@ -24,7 +25,7 @@ export async function currentUser(): Promise<AppUser> {
   if (!identity) throw new HttpError(401, "Please sign in.");
   const sql = database();
   const [user] =
-    await sql`SELECT u.*, l.name AS level FROM app_users u JOIN user_levels l ON l.id=u.level_id WHERE u.id=${identity.id} AND u.active=true`;
+    await sql`SELECT u.*, f.code AS faculty_code,l.name AS level FROM app_users u JOIN user_levels l ON l.id=u.level_id LEFT JOIN faculties f ON f.id=u.faculty_id WHERE u.id=${identity.id} AND u.active=true`;
   if (!user)
     throw new HttpError(
       403,
@@ -46,8 +47,8 @@ export function recordAllowed(user: AppUser, owner: string, faculty: string) {
     user.scope === "all" ||
     owner === user.id ||
     (user.scope === "faculty" &&
-      Boolean(user.faculty_code) &&
-      user.faculty_code === faculty)
+      Boolean(user.faculty_id) &&
+      user.faculty_id === faculty)
   );
 }
 export function checkOrigin(request: Request) {

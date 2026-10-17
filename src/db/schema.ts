@@ -14,6 +14,19 @@ export const userLevels = pgTable("user_levels", {
   name: text().notNull(),
   scope: text().notNull().default("own"),
 });
+export const faculties = pgTable("faculties", {
+  id: uuid().primaryKey().defaultRandom(),
+  code: text().notNull().unique(),
+  name_ms: text().notNull(),
+  name_en: text().notNull(),
+  kind: text().notNull().default("faculty"),
+  website: text().notNull().default(""),
+  source_url: text().notNull().default(""),
+  notes: text().notNull().default(""),
+  is_active: boolean().notNull().default(true),
+  created_at: timestamp({ withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp({ withTimezone: true }).defaultNow().notNull(),
+});
 export const appUsers = pgTable("app_users", {
   id: text().primaryKey(),
   name: text().notNull(),
@@ -23,6 +36,7 @@ export const appUsers = pgTable("app_users", {
     .references(() => userLevels.id),
   scope: text().notNull().default("own"),
   faculty_code: text(),
+  faculty_id: uuid().references(() => faculties.id),
   active: boolean().notNull().default(true),
   created_at: timestamp({ withTimezone: true }).defaultNow().notNull(),
 });
@@ -56,6 +70,9 @@ export const catalogue = pgTable("catalogue", {
   code: text().notNull(),
   name: text().notNull(),
   faculty: text().notNull(),
+  faculty_id: uuid()
+    .notNull()
+    .references(() => faculties.id),
   category: text().notNull(),
   attendance: text().notNull(),
   structure: text().notNull(),
@@ -121,6 +138,9 @@ export const applications = pgTable(
     event_name: text(),
     event_date: text(),
     faculty_snapshot: text().notNull(),
+    faculty_id: uuid()
+      .notNull()
+      .references(() => faculties.id),
     created_at: timestamp({ withTimezone: true }).defaultNow().notNull(),
   },
   (t) => [

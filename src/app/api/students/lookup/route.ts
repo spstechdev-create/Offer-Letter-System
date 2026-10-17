@@ -10,9 +10,9 @@ export async function GET(request: Request) {
     if (doc.length < 3) return Response.json({ exists: false });
     const sql = database();
     const rows =
-      await sql`SELECT s.id,s.name,a.created_by,a.faculty_snapshot FROM students s LEFT JOIN applications a ON a.student_id=s.id WHERE s.document_number=${doc}`;
+      await sql`SELECT s.id,s.name,a.created_by,a.faculty_id FROM students s LEFT JOIN applications a ON a.student_id=s.id WHERE s.document_number=${doc}`;
     const permitted = rows.find((r) =>
-      recordAllowed(user, r.created_by, r.faculty_snapshot),
+      recordAllowed(user, r.created_by, r.faculty_id),
     );
     return Response.json(
       {
