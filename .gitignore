@@ -1,2 +1,9 @@
 .neon
 .env.local
+.env*
+!.env.example
+node_modules/
+.next/
+output/
+*.tsbuildinfo
+.playwright-cli/

@@ -1,0 +1,11 @@
+# Implementation status — 17 October 2026
+
+Implemented in the SPS repository and connected to the verified existing Neon development endpoint. Application migrations add tables without changing `neon_auth`. The initial Admin identity has been provisioned through Managed Auth.
+
+The unified workflow, immutable letter snapshots, on-demand PDF rendering, catalogue editing, staff/agent access, dynamic sidebar/pages, level/action grants, user administration, settings, student corrections/archive and reissue history are implemented. No generated PDF is stored.
+
+Successful validation includes production build, TypeScript checks, core PDF/validation tests, live authentication and workflow tests, catalogue-edit invariance, database immutability, and agent/direct-URL access controls. Labelled QA students were archived; their immutable test snapshots remain available under Include archived.
+
+Source reconciliation produced 208 offerings. The 31 conflicting offerings remain inactive pending administrator review. Existing branding and letter text are historical sources; operational policy and signatory review is still needed. Email reset delivery and external deployment remain unverified. No historical student import has been requested or performed.
+
+The implementation plan is retained as the original agreed baseline; this file records execution rather than rewriting planning history.
